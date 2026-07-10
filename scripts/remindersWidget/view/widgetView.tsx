@@ -176,7 +176,7 @@ export async function WidgetView({
               />
               <Button
                 padding={{ leading: 5, trailing: 5, top: 4, bottom: 4 }}
-                frame={{ maxWidth: 102, alignment: "leading" }}
+                frame={{ alignment: "leading", maxWidth: Infinity }}
                 intent={startLiveActivityButton({ title: r.title, identifier: r.identifier, dueDate: String(r.dueDateComponents?.date), notes: r.notes ? r.notes : '' })}
                 background={{
                   style: r.isCompleted
@@ -214,7 +214,7 @@ export async function WidgetView({
               ) : null}
             </HStack>
             {index < displayCount - 1 && shouldShowSeparator ? (
-              <HStack padding={{ leading: 32, top: 6, bottom: 2 }}>
+              <HStack padding={{ leading: 32, top: 7, bottom: 4 }}>
                 <Rectangle
                   frame={{ height: 0.25 }}
                   stroke={{
@@ -222,6 +222,7 @@ export async function WidgetView({
                     strokeStyle: { dash: [1.5, 1.5] }
                   }}
                   opacity={0.3}
+                  padding={{ leading: 0, trailing: 10 }}
                 />
                 <Spacer />
               </HStack>
