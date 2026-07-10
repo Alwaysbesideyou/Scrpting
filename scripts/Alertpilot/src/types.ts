@@ -40,6 +40,7 @@ export type AlertpilotInput = {
  logLevel?: LogLevel
  skipProfileMemory?: boolean
  skipProfileAnalysis?: boolean
+ skipProfileLearning?: boolean
  skipAutoMemory?: boolean
  url?: string
  note?: string

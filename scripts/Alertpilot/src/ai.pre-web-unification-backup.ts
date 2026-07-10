@@ -99,20 +99,6 @@ function htmlToMarkdown(html: string): string {
         .trim()
 }
 
-export type WebPageContentResult = {
- title: string
- markdown: string
- isAvailable: boolean
- error?: string
-}
-
-function htmlTitle(html: string): string {
- return html.match(/<title.*?>(.+?)<\/title>/is)?.[1]
- ?.replace(/<[^>]+>/g, "")
- .replace(/\s+/g, " ")
- .trim() || ""
-}
-
 export async function getWebContentMarkdown(url: string, timeout = 5): Promise<string> {
     if (!url) return "无"
 
@@ -126,50 +112,6 @@ export async function getWebContentMarkdown(url: string, timeout = 5): Promise<s
     } catch (error) {
         return `网页内容获取失败：${String(error)}`
     }
-}
-
-export async function getWebPageContent(
- url: string,
- timeout =5,
- preferredTitle = ""
-): Promise<WebPageContentResult> {
- const fallbackTitle = String(preferredTitle || "").trim()
- if (!url) {
- return {
- title: fallbackTitle,
- markdown: fallbackTitle ? `# ${fallbackTitle}` : "无",
- isAvailable: false,
- error: "未提供网页 URL"
- }
- }
-
- try {
- const response = await fetch(url, {
- timeout,
- debugLabel: "Alertpilot AI web page"
- })
- const html = await response.text()
- const title = fallbackTitle || htmlTitle(html)
- const content = htmlToMarkdown(html).slice(0,8000)
- const markdown = [title ? `# ${title}` : "", content]
- .filter(Boolean)
- .join("\n\n")
- .slice(0,8000)
-
- return {
- title,
- markdown: markdown || (title ? `# ${title}` : "网页内容为空"),
- isAvailable: Boolean(content),
- ...(!content ? { error: "网页内容为空" } : {})
- }
- } catch (error) {
- return {
- title: fallbackTitle,
- markdown: fallbackTitle ? `# ${fallbackTitle}` : "",
- isAvailable: false,
- error: `网页内容获取失败：${String(error)}`
- }
- }
 }
 
 export function todayKey(date = new Date()): string {
@@ -540,11 +482,10 @@ export function buildAiUserPrompt(
             userProfilePrompt,
             "请根据系统分享来的网页信息创建提醒事项：",
             "1. 默认只创建 1 个 item；只有 rawText 明确要求多个提醒，或包含 & 强拆分符时，才拆分为多个 items。",
-            "2. 根据网页正文生成极简中文提醒标题作为 text；只有网页正文不可用时，才基于 webTitle 清理、精简标题。",
-            "3. note 用1～3条简要要点总结网页核心内容，不要重复 text 或照抄 webTitle。",
-            "4. isSummary 必须为 true，url 必须使用 inputUrl。",
-            "5. 若补充 rawText 没有明确时间，timeWord 必须为空，让 Alertpilot 按本地阅读任务配置补全时间。",
-            "6. 每个 item 都必须填写 rawText：若是网页分享，rawText 使用该 item 对应的原始标题/文本/拆分片段。",
+            "2. 对 webTitle 进行极简总结，直接作为提醒事项 text。",
+            "3. 若没有明确时间，请根据当前时间创建提醒事项（保留 timeWord 为空，让 Alertpilot 使用当前时间补全）。",
+            "4. url 使用 inputUrl。",
+            "5. 每个 item 都必须填写 rawText：若是网页分享，rawText 使用该 item 对应的原始标题/文本/拆分片段。",
             "",
             `webTitle: ${webTitle}`,
             `inputUrl: ${inputUrl}`,
@@ -566,27 +507,14 @@ export async function generateAiItemsForShortcutInput(
 ): Promise<AiGeneratedItem[]> {
     const sourceText = shortcutInput.rawText || shortcutInput.webTitle || ""
     const url = shortcutInput.inputUrl || extractUrl(sourceText)
-    const isWebShare = Boolean(shortcutInput.inputUrl && /^https?:\/\//i.test(shortcutInput.inputUrl))
     const holidays = await getCachedHolidayText(config)
-    let webContent = ""
-
-    if (isWebShare) {
-        const webPage = await getWebPageContent(url, config.timeOut || 5, shortcutInput.webTitle || "")
-        if (!webPage.isAvailable) {
-            throw new Error(webPage.error || "网页内容不可用")
-        }
-        if (!shortcutInput.webTitle && webPage.title) {
-            shortcutInput.webTitle = webPage.title
-        }
-        webContent = webPage.markdown
-    }
-
+    const webContent = await getWebContentMarkdown(url, config.timeOut || 5)
     const instructions = fillPromptVariables(config.aiPrompt || "", config, holidays, webContent)
     const prompt = buildAiUserPrompt(
-        shortcutInput,
-        sourceText || shortcutInput.webTitle || "",
-        isWebShare ? undefined : config
-    )
+ shortcutInput,
+ sourceText,
+ shortcutInput.inputUrl ? undefined : config
+)
 
     return requestAiGeneratedItems(prompt, instructions, config)
 }

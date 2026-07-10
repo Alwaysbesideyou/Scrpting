@@ -46,7 +46,7 @@ import {
     formatPromptDate,
     getCachedHolidayText,
     getHolidayCacheText,
-    getWebContentMarkdown,
+    getWebPageContent,
     requestAiGeneratedItems,
     todayKey
 } from "./ai"
@@ -1587,7 +1587,12 @@ function AiPromptEditorPage({
         }
 
         setWebContentText("正在获取网页内容…")
-        setWebContentText(await getWebContentMarkdown(url, config.timeOut || 5))
+        const webPage = await getWebPageContent(url, config.timeOut || 5)
+        setWebContentText(
+            webPage.isAvailable
+                ? webPage.markdown
+                : `网页获取失败：${webPage.error || "未知错误"}`
+        )
     }
 
     async function savePrompt() {
@@ -1996,9 +2001,14 @@ function DebugRunnerPage({
             }
 
             const holidays = await getCachedHolidayText(config)
-            const webContent = await getWebContentMarkdown(url, config.timeOut || 5)
+            const isWeb = Boolean(url && /^https?:\/\//i.test(url))
+            const webPage = isWeb ? await getWebPageContent(url, config.timeOut || 5, shortcutInput.webTitle || "") : null
+            if (isWeb && webPage && !webPage.isAvailable) {
+                throw new Error(`网页获取失败：${webPage.error || "未知错误"}`)
+            }
+            const webContent = webPage?.isAvailable ? webPage.markdown : ""
             const instructions = fillPromptVariables(getAiPrompt(config), config, holidays, webContent)
-            const prompt = buildAiUserPrompt(shortcutInput, rawText, config)
+            const prompt = buildAiUserPrompt(shortcutInput, rawText, isWeb ? undefined : config)
             const items = await requestAiGeneratedItems(prompt, instructions, config)
             const first = Array.isArray(items) ? items[0] : null
 

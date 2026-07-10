@@ -22,7 +22,7 @@ const fallbackInput: AlertpilotInput = {
         url: "",
         timeWord: "",
         note: ""
-    }
+          }
 }
 
 const LOG_LEVELS: LogLevel[] = ["error", "warn", "info", "debug", "trace"]

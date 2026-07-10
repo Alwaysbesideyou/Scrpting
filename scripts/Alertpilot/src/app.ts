@@ -68,18 +68,33 @@ export async function runAlertpilot(
  smartCategory: "reading",
  smartReason: "网页链接分享，自动归类为阅读任务"
  }
+ input.skipProfileLearning = true
  input.skipAutoMemory = true
- logger.info("AI", "检测到网页链接分享，跳过AI分析，自动使用阅读任务分类", {
+ logger.info("AI", "检测到网页链接分享：AI仅用于网页摘要，任务类型固定为阅读", {
  url: input.shortcutInput?.inputUrl,
  webTitle: input.shortcutInput?.webTitle
  })
  }
 
- const aiItems = useAI && !isWebUrlShare
+ const aiItems = useAI
  ? await ensureAiInput(input, config, logger)
  : []
- if (!useAI || isWebUrlShare) {
- logger.info("AI", isWebUrlShare ? "网页链接分享，跳过AI调用" : "检测到 no-ai/useAI=false 指令，跳过 AI 与用户画像记忆", {
+ if (isWebUrlShare) {
+ input.ai = {
+ ...input.ai,
+ smartCategory: "reading",
+ smartReason: "网页链接分享，固定归类为阅读任务"
+ }
+ aiItems.forEach(item => {
+ item.smartCategory = "reading"
+ item.smartReason = "网页链接分享，固定归类为阅读任务"
+ })
+ logger.info("AI", useAI ? "网页链接分享已完成 AI 摘要，固定使用阅读任务调度" : "网页链接分享已跳过 AI 调用，固定使用阅读任务调度", {
+ url: input.shortcutInput?.inputUrl,
+ webTitle: input.shortcutInput?.webTitle
+ })
+ } else if (!useAI) {
+ logger.info("AI", "检测到 no-ai/useAI=false 指令，跳过 AI 与用户画像记忆", {
  rawText: input.shortcutInput?.rawText || ""
  })
  }
@@ -140,7 +155,7 @@ export async function runAlertpilot(
 
  parseInput(input, output, config, logger)
  logger.trace("MATCH", "脚本匹配完成", () => summarizeMatch(input, output))
- const learnedFromExplicit = input.skipProfileAnalysis
+ const learnedFromExplicit = input.skipProfileAnalysis || input.skipProfileLearning
  ? false
  : learnFromExplicitSchedule(input, config, logger)
  if (!input.skipProfileAnalysis) {
@@ -208,7 +223,7 @@ export async function runAlertpilot(
  urlTitle.replace(/\n+/gm, "") ||
  `${input.misMatch || ""}${stripDecorators(text)}`
 
- if (text.length >20 && ((input.ai?.isSummary && input.ai?.text) || urlTitle)) {
+ if (!isWebUrlShare && text.length >20 && ((input.ai?.isSummary && input.ai?.text) || urlTitle)) {
  output.note = `${output.note || ""}${stripDecorators(text)}`
  }
 
@@ -388,7 +403,7 @@ async function ensureAiInput(
  const normalizedItems = Array.isArray(items)
  ? items
  .filter(Boolean)
- .map(item => normalizeAiGeneratedItem(item, shortcutInput.rawText || shortcutInput.webTitle || ""))
+ .map(item => normalizeAiGeneratedItem(item, shortcutInput.rawText || shortcutInput.webTitle || "", config))
  : []
 
  if (!normalizedItems.length) {
@@ -443,7 +458,8 @@ function buildAdditionalNotification(output: AlertpilotOutput, lang: LanguagePac
 
 function normalizeAiGeneratedItem(
  item: AiGeneratedItem,
- fallbackRawText: string
+ fallbackRawText: string,
+ config: AlertpilotConfig
 ): AiGeneratedItem {
  const rawText = String(item.rawText || item.timeWord || item.text || fallbackRawText || "").trim()
  return {
@@ -453,7 +469,7 @@ function normalizeAiGeneratedItem(
  timeWord: String(item.timeWord || "").trim(),
  note: String(item.note || "").trim(),
  url: String(item.url || "").trim(),
- classReminders: String(item.classReminders || "").trim() || getDefaultReminderList,
+ classReminders: String(item.classReminders || "").trim() || getDefaultReminderList(config),
  smartCategory: String(item.smartCategory || "").trim(),
  smartReason: String(item.smartReason || "").trim()
  }
