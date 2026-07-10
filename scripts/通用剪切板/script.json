@@ -1,0 +1,48 @@
+{
+  "name" : "通用剪切板",
+  "color" : "rgba(88, 86, 214,1)",
+  "version" : "2.6.1",
+  "localizedNames" : {
+    "zh" : "",
+    "pt" : "",
+    "fr" : "",
+    "en" : "",
+    "it" : "",
+    "es" : "",
+    "ru" : "",
+    "de" : "",
+    "ja" : ""
+  },
+  "intentInputTypes" : [
+    "texts"
+  ],
+  "iconImage" : "",
+  "entry" : "index.tsx",
+  "author" : {
+    "email" : null,
+    "homepage" : "https:\/\/github.com\/BlackCCCat",
+    "name" : "BlackCCCat"
+  },
+  "icon" : "doc.on.clipboard.fill",
+  "description" : "Clipboard all in Scripting",
+  "runInApp" : true,
+  "remoteResource" : {
+    "url" : "https:\/\/github.com\/BlackCCCat\/Scripting-Scripts\/releases\/latest\/download\/CAIS.zip",
+    "hash" : "3ac16e672945b3fbe1b80f709627bdd6",
+    "autoUpdateInterval" : null
+  },
+  "localizedDescriptions" : {
+    "ja" : "",
+    "pt" : "",
+    "fr" : "",
+    "es" : "",
+    "de" : "",
+    "zh" : "Clipboard all in Scripting",
+    "ru" : "",
+    "it" : "",
+    "en" : "Clipboard all in Scripting"
+  },
+  "contributors" : [
+
+  ]
+}

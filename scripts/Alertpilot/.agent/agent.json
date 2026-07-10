@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "id": "alertpilot",
+  "scriptName": "Alertpilot",
+  "displayName": "Alertpilot",
+  "description": "AI 提醒事项助手，支持自然语言创建提醒与一句话修改提醒时间。适合由 Sudie 中枢转发快捷指令上下文。",
+  "enabledByDefault": true,
+  "category": "productivity",
+  "keywords": [
+    "提醒",
+    "待办",
+    "创建提醒",
+    "修改提醒",
+    "改时间",
+    "reschedule"
+  ],
+  "inputExamples": [
+    "明天下午三点提醒我交电费",
+    "把周报改到周五下午三点",
+    "把买牛奶改到明天早上八点"
+  ],
+  "routing": {
+    "enabled": true,
+    "naturalLanguage": {
+      "handledBy": "self",
+      "prompt": "当用户想创建提醒、添加待办、延后提醒、调整提醒时间、把某个提醒改到另一个时间时，路由到 Alertpilot。"
+    },
+    "positiveExamples": [
+      {
+        "input": "明天下午三点提醒我交电费",
+        "actionId": "createReminder"
+      },
+      {
+        "input": "把周报改到周五下午三点",
+        "actionId": "rescheduleReminder"
+      }
+    ],
+    "negativeExamples": [
+      "今天是不是工作日",
+      "帮我查节假日安排"
+    ]
+  },
+  "actions": [
+    {
+      "id": "createReminder",
+      "title": "创建提醒",
+      "description": "把自然语言转成提醒事项创建结果。",
+      "when": "用户要创建提醒、添加待办、记录未来要做的事情。",
+      "routeHints": [
+        "提醒我",
+        "记得",
+        "待办",
+        "创建提醒"
+      ],
+      "parametersSchema": {
+        "type": "object",
+        "properties": {
+          "action": { "type": "string", "enum": ["createReminder"] },
+          "shortcutInput": {
+            "type": "object",
+            "properties": {
+              "rawText": { "type": "string", "description": "原始自然语言提醒内容" },
+              "inputUrl": { "type": "string" },
+              "webTitle": { "type": "string" }
+            },
+            "required": ["rawText"]
+          },
+          "useAI": { "type": "boolean" }
+        },
+        "required": ["action", "shortcutInput"]
+      },
+      "call": {
+        "type": "scriptRun",
+        "scriptName": "Alertpilot",
+        "action": "createReminder",
+        "queryTemplate": {
+          "action": "createReminder",
+          "alertpilotInput": {
+            "action": "createReminder",
+            "shortcutInput": {
+              "rawText": "{{segment}}",
+              "texts": "{{shortcutContext.texts}}",
+              "urls": "{{shortcutContext.urls}}",
+              "imageCount": "{{shortcutContext.imageCount}}",
+              "fileURLs": "{{shortcutContext.fileURLs}}",
+              "inputUrl": "{{shortcutContext.urls.0}}",
+              "shortcutParameter": "{{shortcutContext.shortcutParameter}}"
+            },
+            "useAI": true,
+            "debug": "{{debug}}"
+          }
+        }
+      }
+    },
+    {
+      "id": "rescheduleReminder",
+      "title": "修改提醒时间",
+      "description": "根据自然语言查找提醒并调整提醒时间，支持模糊匹配与确认返回。",
+      "when": "用户要把某个提醒改到另一个时间、延后提醒、调整待办时间。",
+      "routeHints": [
+        "改到",
+        "改成",
+        "延后",
+        "推迟",
+        "挪到"
+      ],
+      "parametersSchema": {
+        "type": "object",
+        "properties": {
+          "action": { "type": "string", "enum": ["rescheduleReminder"] },
+          "shortcutInput": {
+            "type": "object",
+            "properties": {
+              "rawText": { "type": "string", "description": "原始自然语言重排指令" }
+            },
+            "required": ["rawText"]
+          },
+          "useAI": { "type": "boolean" }
+        },
+        "required": ["action", "shortcutInput"]
+      },
+      "call": {
+        "type": "scriptRun",
+        "scriptName": "Alertpilot",
+        "action": "rescheduleReminder",
+        "queryTemplate": {
+          "action": "rescheduleReminder",
+          "alertpilotInput": {
+            "action": "rescheduleReminder",
+            "shortcutInput": {
+              "rawText": "{{segment}}",
+              "shortcutParameter": "{{shortcutContext.shortcutParameter}}"
+            },
+            "useAI": false,
+            "debug": "{{debug}}"
+          }
+        }
+      }
+    }
+  ]
+}

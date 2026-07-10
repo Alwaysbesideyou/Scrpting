@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "id": "off-day",
+  "scriptName": "Off day",
+  "displayName": "节假日日历",
+  "description": "查看和同步中国节假日日历，支持查询最近休息日、最近工作日、判断指定日期是否休息日，以及手动写入休息日或工作日。",
+  "enabledByDefault": true,
+  "category": "calendar",
+  "keywords": [
+    "节假日",
+    "放假",
+    "补班",
+    "调休",
+    "休息日",
+    "工作日",
+    "日历",
+    "holiday",
+    "workday",
+    "offday"
+  ],
+  "inputExamples": [
+    "查一下 2026-10-01 是不是休息日",
+    "帮我看最近一个休息日",
+    "查最近一个工作日",
+    "把 2026-05-16 标记为休息日，备注年假",
+    "把 2026-05-17 标记为工作日"
+  ],
+  "routing": {
+    "enabled": true,
+    "naturalLanguage": {
+      "handledBy": "hub",
+      "prompt": "当用户提到节假日、放假、补班、调休、休息日、工作日、日历查询、某天是否上班/放假、把某天标记为休息日/工作日等意图时，优先路由到此 Agent。若用户是在创建提醒、待办、通知，而不是查询或设置节假日状态，则不要路由到此 Agent。"
+    },
+    "positiveExamples": [
+      { "text": "查一下明天是不是休息日", "actionId": "is-rest-day" },
+      { "text": "最近一个休息日是什么时候", "actionId": "latest-rest-day" },
+      { "text": "最近一个工作日", "actionId": "latest-work-day" },
+      { "text": "把 2026-05-16 设为休息日，备注年假", "actionId": "set-day-kind" }
+    ],
+    "negativeExamples": [
+      "提醒我明天休息",
+      "明天放假提醒我睡懒觉",
+      "给我创建一个下周上班提醒"
+    ]
+  },
+  "actions": [
+    {
+      "id": "latest-rest-day",
+      "title": "查询最近休息日",
+      "description": "查询从基准日期开始最近的休息日。",
+      "when": "用户想知道最近一个休息日、最近一次放假、下一次休息是什么时候。",
+      "routeHints": ["最近休息日", "下一次放假", "最近放假"],
+      "parametersSchema": {
+        "type": "object",
+        "properties": {
+          "baseDate": { "type": "string", "description": "可选，基准日期，格式 yyyy-mm-dd" },
+          "lookaheadDays": { "type": "number", "description": "可选，向后搜索天数" }
+        }
+      },
+      "call": {
+        "type": "scriptRun",
+        "scriptName": "Off day",
+        "action": "latest",
+        "queryTemplate": {
+          "action": "latest",
+          "baseDate": "{{baseDate}}",
+          "lookaheadDays": "{{lookaheadDays}}"
+        }
+      }
+    },
+    {
+      "id": "latest-work-day",
+      "title": "查询最近工作日",
+      "description": "查询从基准日期开始最近的工作日。",
+      "when": "用户想知道最近一个工作日、最近一次补班或下一次上班日期。",
+      "routeHints": ["最近工作日", "下一次上班", "最近补班"],
+      "parametersSchema": {
+        "type": "object",
+        "properties": {
+          "baseDate": { "type": "string", "description": "可选，基准日期，格式 yyyy-mm-dd" },
+          "lookaheadDays": { "type": "number", "description": "可选，向后搜索天数" }
+        }
+      },
+      "call": {
+        "type": "scriptRun",
+        "scriptName": "Off day",
+        "action": "latestWork",
+        "queryTemplate": {
+          "action": "latestWork",
+          "baseDate": "{{baseDate}}",
+          "lookaheadDays": "{{lookaheadDays}}"
+        }
+      }
+    },
+    {
+      "id": "is-rest-day",
+      "title": "判断指定日期是否休息日",
+      "description": "判断某个日期是休息日还是工作日。",
+      "when": "用户询问某一天是否放假、是否休息、是否上班。",
+      "routeHints": ["是不是休息日", "是否放假", "是否上班"],
+      "parametersSchema": {
+        "type": "object",
+        "required": ["date"],
+        "properties": {
+          "date": { "type": "string", "description": "必填，查询日期，格式 yyyy-mm-dd" }
+        }
+      },
+      "call": {
+        "type": "scriptRun",
+        "scriptName": "Off day",
+        "action": "isRestDay",
+        "queryTemplate": {
+          "action": "isRestDay",
+          "date": "{{date}}"
+        }
+      }
+    },
+    {
+      "id": "set-day-kind",
+      "title": "设置指定日期为休息日或工作日",
+      "description": "手动把某个日期标记为休息日或工作日，并可附带备注。",
+      "when": "用户明确要求把某个日期设为休息日、工作日、补班或调休。",
+      "routeHints": ["设为休息日", "设为工作日", "标记补班", "标记调休"],
+      "parametersSchema": {
+        "type": "object",
+        "required": ["date", "kind"],
+        "properties": {
+          "date": { "type": "string", "description": "必填，目标日期，格式 yyyy-mm-dd" },
+          "kind": { "type": "string", "description": "必填，off 表示休息日，work 表示工作日" },
+          "note": { "type": "string", "description": "可选，备注说明" }
+        }
+      },
+      "call": {
+        "type": "scriptRun",
+        "scriptName": "Off day",
+        "action": "setRestDay",
+        "queryTemplate": {
+          "action": "setRestDay",
+          "date": "{{date}}",
+          "kind": "{{kind}}",
+          "note": "{{note}}"
+        }
+      }
+    }
+  ]
+}

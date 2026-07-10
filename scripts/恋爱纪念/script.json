@@ -1,0 +1,44 @@
+{
+  "author" : {
+    "name" : "Sudie",
+    "email" : "sudie@duck.com",
+    "homepage" : null
+  },
+  "version" : "1.0.0",
+  "remoteResource" : null,
+  "localizedDescriptions" : {
+    "fr" : "",
+    "en" : "",
+    "it" : "",
+    "es" : "",
+    "ru" : "",
+    "pt" : "",
+    "ja" : "",
+    "zh" : "",
+    "de" : ""
+  },
+  "intentInputTypes" : [
+
+  ],
+  "name" : "恋爱纪念",
+  "runInApp" : false,
+  "icon" : "square.2.layers.3d.fill",
+  "color" : "rgba(238, 92, 98,1)",
+  "contributors" : [
+
+  ],
+  "description" : null,
+  "iconImage" : null,
+  "localizedNames" : {
+    "fr" : "",
+    "en" : "",
+    "it" : "",
+    "es" : "",
+    "ru" : "",
+    "pt" : "",
+    "ja" : "",
+    "zh" : "",
+    "de" : ""
+  },
+  "entry" : "index.tsx"
+}

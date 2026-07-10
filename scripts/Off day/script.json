@@ -1,0 +1,48 @@
+{
+  "contributors" : [
+
+  ],
+  "description" : "查看和同步中国节假日日历。",
+  "runInApp" : true,
+  "entry" : "index.tsx",
+  "icon" : "calendar",
+  "version" : "",
+  "localizedNames" : {
+    "it" : "",
+    "de" : "",
+    "es" : "",
+    "pt" : "",
+    "fr" : "",
+    "ru" : "",
+    "zh" : "节假日日历",
+    "ja" : "",
+    "en" : "Holiday Calendar"
+  },
+  "localizedDescriptions" : {
+    "ja" : "",
+    "de" : "",
+    "zh" : "查看和同步中国节假日日历。",
+    "fr" : "",
+    "en" : "View and sync the China holiday calendar.",
+    "pt" : "",
+    "it" : "",
+    "es" : "",
+    "ru" : ""
+  },
+  "iconImage" : null,
+  "color" : "rgba(255, 149, 0,1)",
+  "intentInputTypes" : [
+    "text"
+  ],
+  "author" : {
+    "name" : "BlackCCCat",
+    "email" : null,
+    "homepage" : "https:\/\/github.com\/BlackCCCat"
+  },
+  "remoteResource" : {
+    "hash" : "",
+    "url" : "https:\/\/github.com\/BlackCCCat\/Scripting-Scripts\/releases\/latest\/download\/Off-day.zip",
+    "autoUpdateInterval" : null
+  },
+  "name" : "Off day"
+}

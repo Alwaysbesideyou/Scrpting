@@ -1,0 +1,42 @@
+{
+  "runInApp" : false,
+  "icon" : "rosette",
+  "color" : "rgba(238, 92, 98,1)",
+  "author" : {
+    "email" : "sudie@duck.com",
+    "homepage" : null,
+    "name" : "Sudie"
+  },
+  "name" : "remindersWidget",
+  "version" : "0.1.0",
+  "intentInputTypes" : [
+
+  ],
+  "contributors" : [
+
+  ],
+  "description" : "这是一个复刻提醒事项的小组件，用于快速编辑、完成提醒事项，创建提醒事项实时活动的小组件。",
+  "remoteResource" : null,
+  "localizedNames" : {
+    "fr" : "",
+    "es" : "",
+    "de" : "",
+    "ja" : "",
+    "en" : "",
+    "it" : "",
+    "pt" : "",
+    "ru" : "",
+    "zh" : "灵动提醒"
+  },
+  "localizedDescriptions" : {
+    "es" : "",
+    "de" : "",
+    "ja" : "",
+    "zh" : "",
+    "pt" : "",
+    "en" : "",
+    "fr" : "",
+    "ru" : "",
+    "it" : ""
+  }
+}

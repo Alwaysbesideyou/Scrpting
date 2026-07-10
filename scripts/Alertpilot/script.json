@@ -1,0 +1,46 @@
+{
+  "intentInputTypes" : [
+    "Text",
+    "URLs",
+    "Images"
+  ],
+  "entry" : "index.tsx",
+  "localizedDescriptions" : {
+    "en" : "",
+    "ru" : "",
+    "ja" : "",
+    "de" : "",
+    "fr" : "",
+    "zh" : "Alertpilot 是一款面向 iOS 快捷指令的 AI 提醒事项助手，可从文本、链接、网页和分享内容中智能提取时间、地点、列表、标签、备注与链接，支持多事项拆分并输出结构化提醒数据。",
+    "it" : "",
+    "es" : "",
+    "pt" : ""
+  },
+  "color" : "rgba(238, 92, 98,1)",
+  "description" : "Alertpilot 是一款面向 iOS 快捷指令的 AI 提醒事项助手，可从文本、链接、网页和分享内容中智能提取时间、地点、列表、标签、备注与链接，支持多事项拆分并输出结构化提醒数据。",
+  "name" : "Alertpilot",
+  "localizedNames" : {
+    "en" : "Alertpilot",
+    "fr" : "",
+    "de" : "",
+    "ja" : "",
+    "es" : "",
+    "it" : "",
+    "zh" : "",
+    "ru" : "",
+    "pt" : ""
+  },
+  "icon" : "list.bullet",
+  "contributors" : [
+
+  ],
+  "iconImage" : "",
+  "version" : "3.0.0",
+  "remoteResource" : null,
+  "runInApp" : false,
+  "author" : {
+    "name" : "Sudie",
+    "email" : "sudie@duck.com",
+    "homepage" : null
+  }
+}
