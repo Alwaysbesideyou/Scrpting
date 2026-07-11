@@ -25,6 +25,8 @@ import { config } from "./components/config"
         if (Script.queryParameters.startLiveActivity) {
             const { title, identifier, dueDate, notes } = Script.queryParameters
             await startLiveActivity({ title, identifier, dueDate, notes })
+            Script.exit(Intent.text('实时活动已启动'))
+            return
         } else {
             const { url } = Script.queryParameters
             Safari.openURL(url)
@@ -32,6 +34,11 @@ import { config } from "./components/config"
             Script.exit(Intent.text('完成'))
             return
         }
+    } else {
+        // 没有查询参数时，用户直接运行脚本
+        notification(fileName, '此脚本是小组件脚本，请在桌面添加小组件使用', true, true)
+        Script.exit(Intent.text('请在桌面添加小组件使用'))
+        return
     }
     // Widget.preview({ family: "systemSmall" })
 })()

@@ -150,7 +150,7 @@ export async function WidgetView({
           fontDesign={"rounded"}
           fontWeight={"bold"}
           font={24}
-          padding={{ trailing: 10, top: 0, bottom: 0 }}
+          padding={{ trailing: 12, top: 0, bottom: 0 }}
           buttonStyle="borderless"
           controlSize="regular"
           contentTransition={numTransition}
@@ -163,7 +163,7 @@ export async function WidgetView({
           <VStack key={r.identifier} alignment="leading" spacing={0} padding={{ leading: 10, top: index === 0 ? (isLatestSystem ? 2 : displayCount === 4 ? -10 : -4) : 0 }}>
             <HStack spacing={6} alignment="center"            >
               <Button
-                padding={{ leading: 10, trailing: 6 }}
+                padding={{ leading: 8, trailing: 0 }}
                 frame={{ width: 24 }}
                 title=''
                 intent={CompleteReminderIntentWidget({ reminderId: r.identifier, isCompleted: r.isCompleted })}
@@ -204,19 +204,19 @@ export async function WidgetView({
               ) ? (
                 <Link url={`x-apple-reminderkit://REMCDReminder/${r.identifier}/details`}>
                   <Image
-                    frame={{ height: 28 }}
+                    frame={{ height: 24 }}
                     font={16}
                     systemName={"clock"}
                     symbolRenderingMode="multicolor"
-                    padding={{ leading: -16, trailing: 6 }}
+                    padding={{ leading: -16, trailing: 8 }}
                   />
                 </Link>
               ) : null}
             </HStack>
             {index < displayCount - 1 && shouldShowSeparator ? (
-              <HStack padding={{ leading: 32, top: 7, bottom: 4 }}>
+              <HStack padding={{ leading: 32, top: 8, bottom: 4 }}>
                 <Rectangle
-                  frame={{ height: 0.25 }}
+                  frame={{ height: 0.3 }}
                   stroke={{
                     shapeStyle: styleSecondary,
                     strokeStyle: { dash: [1.5, 1.5] }
