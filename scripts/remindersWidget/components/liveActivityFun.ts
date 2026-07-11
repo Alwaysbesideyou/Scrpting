@@ -151,7 +151,8 @@ export async function startReminderActivity(
 /** === 结束：按 identifier 查映射并 end，然后清理映射 ===（文档 §7.3） */
 export async function endActivityByIdentifier(
     title: string,
-    identifier: string
+    identifier: string,
+    notes?: string
 ): Promise<boolean> {
     const records = normalizeRecords(loadLiveActivityAllID())
     const rec = records.find((r) => r.reminderId === identifier)
@@ -170,7 +171,7 @@ export async function endActivityByIdentifier(
         return false
     }
 
-    const endState = makeState(title, identifier, "", "", true, new Date().toISOString())
+    const endState = makeState(title, identifier, "", notes, true, new Date().toISOString())
 
     const ok = await act.end(endState, {
         dismissTimeInterval: config?.liveActivityDismissTimeInterval,

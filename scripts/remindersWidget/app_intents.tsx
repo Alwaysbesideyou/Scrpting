@@ -82,7 +82,11 @@ export const CompleteReminderIntentLiveActivity = AppIntentManager.register({
             if (targetR) {
                 const liveActivity = await import("./components/liveActivityFun") // 动态导入
                 if (targetR.isCompleted) {
-                    await liveActivity.endActivityByIdentifier(targetR.title, params.reminderId)
+                    await liveActivity.endActivityByIdentifier(
+                        targetR.title,
+                        params.reminderId,
+                        targetR.notes ?? ""
+                    )
                 } else {
                     const dueDateObj = normalizeDueDate(targetR.dueDateComponents?.date ? targetR.dueDateComponents?.date.toISOString() : "")
                     await liveActivity.startReminderActivity(targetR.title, targetR.identifier, dueDateObj.toISOString(), targetR.notes || "")

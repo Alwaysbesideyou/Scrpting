@@ -34,7 +34,7 @@ const builder: LiveActivityUIBuilder<ReminderState> = (state) => {
     // minimal={<MiniActivityViewTrailing dueDate={dueDate} startDate={startDate} />}
     >
       <LiveActivityUIExpandedCenter>
-        {<LargeActivityView title={title} identifier={identifier} dueDate={dueDate} notes={notes} />}
+        {<LargeActivityView title={title} identifier={identifier} dueDate={dueDate} notes={notes} isCompleted={isCompleted} />}
       </LiveActivityUIExpandedCenter>
     </LiveActivityUI>
   )

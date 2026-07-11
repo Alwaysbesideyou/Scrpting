@@ -17,7 +17,11 @@ export const CompleteReminderIntentLiveActivity = AppIntentManager.register({
             if (targetR) {
                 const liveActivity = await import("./components/liveActivityFun")
                 if (targetR.isCompleted) {
-                    await liveActivity.endActivityByIdentifier(targetR.title, params.reminderId)
+                    await liveActivity.endActivityByIdentifier(
+                        targetR.title,
+                        params.reminderId,
+                        targetR.notes ?? ""
+                    )
                 } else {
                     const rawDueDate = targetR.dueDateComponents?.date
                     const dueDateObj = normalizeDueDate(rawDueDate instanceof Date ? rawDueDate.toISOString() : "")

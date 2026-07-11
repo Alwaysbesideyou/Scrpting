@@ -26,7 +26,7 @@ export function LargeActivityView({
     notes?: string
     isCompleted?: boolean
 }) {
-    const timeText = dueDate !== '' ? str2TimeText(dueDate) : '❤️已完成'
+    const timeText = isCompleted ? '❤️已完成' : str2TimeText(dueDate)
     const height = notes ? heightViewMax : heightView
 
     return (
